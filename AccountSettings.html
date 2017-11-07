@@ -46,6 +46,7 @@
 
             <!-- Page Content Holder -->
             <div id="content">
+
                 <nav class="navbar navbar-default">
                     <div class="container">
 
@@ -58,8 +59,6 @@
 
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
-<<<<<<< HEAD
-=======
                               <li role="presentation" class="vdivide">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#"
           role="button" aria-haspopup="true" aria-expanded="false">My Account<span class="caret"></span></a>
@@ -67,7 +66,6 @@
             <li><a href="#">Account Settings</a></li>
             <li><a href="#">Logout</a></li>
           </ul>
->>>>>>> 8144b3a8b292773628a28e36a7e154b12553f094
                                 <li><a href="#" id="clock"></a></li>
 
                             </ul>
@@ -75,14 +73,33 @@
                     </div>
                 </nav>
 
-                <h2 class="text-center">Welcome to TimeClock</h2>
+                <h2 class="text-center">Account Settings</h2>
                 <hr>
-                <p class="text-center">
-                	TimeClock is the easiest way to keep track of your hours. To get started, click on one of the menu options on the left.
-                </p>
-
+                <form action="#">
+                  New Password: <input type="text" name="newpassword">
+                  <br>
+                  <!-- Could potentially have to change name="newpassword" -->
+                  Retype New Password: <input type="text" name="newpassword">
+                  <br>
+                  Email: <input type="text" name="email">
+                  <br>
+                  Phone: <input type="text" name="phone">
+                  <br>
+                  Address: <input type="text" name="phone">
+                  <br>
+                  State: <input type="text" name="state">
+                  <br>
+                  Zip Code: <input type="text" name="zipcode">
+                  <br><br>
+                  <input type="submit" value="Update">
+                  <input type="submit" value="Cancel">
+                </form>
             </div>
         </div>
+
+
+
+
 
         <!-- jQuery CDN -->
          <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
