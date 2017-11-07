@@ -143,7 +143,7 @@ i, span {
     display: block;
 }
 #sidebar ul li a:hover {
-    color: #890000;
+    color: #660000;
     background: #fff;
 }
 #sidebar ul li a i {
@@ -152,7 +152,7 @@ i, span {
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
     color: #fff;
-    background: #890000;
+    background: #660000;
 }
 
 
