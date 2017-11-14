@@ -3,41 +3,40 @@
 	$password="";
 	//$name = "";
 	$error = false;
-	$loginOK = null;
+	$loginOK = false;
 
 	if(isset($_POST["login"])){
-    if(isset($_POST["username"])) $username=$_POST["username"];
-    if(isset($_POST["password"])) $password=$_POST["password"];
+	    if(isset($_POST["username"])) $username=$_POST["username"];
+	    if(isset($_POST["password"])) $password=$_POST["password"];
 
-    if(empty($username) || empty($password)) {
-      $error=true;
+	    if(empty($username) || empty($password)) {
+	      $error=true;
+		}
+
+	    if(!$error){
+	      //check username and password with the database record
+			require_once("db.php");
+			$sql = "select password from login where username='$username'";
+			$result = $mydb->query($sql);
+			$row=mysqli_fetch_array($result);
+			if ($row){
+				if(strcmp($password, $row["password"]) ==0 ){
+					$loginOK=true;
+					//$result = $mydb->query("select concat(last, first) as name from employeedata where employeedata.id = login.id");
+					//$name = $row["name"];
+				} else {
+					$loginOK = false;
+				}
+			}
+
+		    if($loginOK) {
+		        session_start();
+		        $_SESSION["username"] = $username;
+		       // $_SESSION["empname"] = $name;
+		        Header("Location:..");
+		    }
+	    }
 	}
-
-    if(!$error){
-      //check username and password with the database record
-      require_once("db.php");
-      $sql = "select password from login where username='$username'";
-      $result = $mydb->query($sql);
-
-      $row=mysqli_fetch_array($result);
-      if ($row){
-        if(strcmp($password, $row["password"]) ==0 ){
-          $loginOK=true;
-          //$result = $mydb->query("select concat(last, first) as name from employeedata where employeedata.id = login.id");
-          //$name = $row["name"];
-        } else {
-          $loginOK = false;
-        }
-      }
-
-      if($loginOK) {
-        session_start();
-        $_SESSION["username"] = $username;
-       // $_SESSION["empname"] = $name;
-        Header("Location:..");
-      }
-    }
-  }
 ?>
 <!DOCTYPE html>
 <html>
@@ -74,7 +73,7 @@
 						        ?>">
 								<?php
 									if (empty($username) && $error){
-										echo "<span style='color: red;'>Please enter username</span>"; //add error class
+										echo "<span style='color: red;'>Please enter username</span>";
 									}
 								?>
 							</div>
@@ -83,7 +82,7 @@
 							  	<input type="password" class="form-control" id="password" name="password" placeholder="Password" >
 							  	<?php
 									if (empty($password) && $error){
-										echo "<span style='color: red;'>Please enter a password</span>"; //add error class
+										echo "<span style='color: red;'>Please enter a password</span>";
 									}
 								?>
 							</div>
@@ -91,10 +90,10 @@
 							<br>						
 							<table>
 								<tr>
-									<td><button type="submit" formmethod="post" name="login"class="btn btn-primary" action="PHP FILE">Login</button></td>
+									<td><button type="submit" formmethod="post" name="login" class="btn btn-primary" action="PHP FILE">Login</button></td>
 									<?php
-										if(!$loginOK){
-											echo "<td><span style='color: red;' hidden>Invalid login credentials</span></td>";
+										if(!$loginOK && isset($_POST["login"])){
+											echo "<td><span style='color: red;'>Invalid login credentials</span></td>";
 										}
 									?>
 								</tr>
