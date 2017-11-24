@@ -1,7 +1,12 @@
 <?php
+	session_start();
+	if (isset($_SESSION["login"])){
+		Header("Location:..");
+	}
 	$username="";
 	$password="";
-	//$name = "";
+	$lname = "";
+	$fname = "";
 	$error = false;
 	$loginOK = false;
 
@@ -20,10 +25,13 @@
 			$result = $mydb->query($sql);
 			$row=mysqli_fetch_array($result);
 			if ($row){
-				if(strcmp($password, $row["password"]) ==0 ){
+				//if(strcmp($password, $row["password"]) ==0 ){
+				if (password_verify($password, $row["password"])){
 					$loginOK=true;
-					//$result = $mydb->query("select concat(last, first) as name from employeedata where employeedata.id = login.id");
-					//$name = $row["name"];
+					$result = $mydb->query("SELECT employeedata.LastName AS last, employeedata.FirstName AS first FROM employeedata, login WHERE login.EmployeeID = employeedata.EmployeeID");
+					$row = mysqli_fetch_array($result);
+					$lname = $row["last"];
+					$fname = $row["first"];
 				} else {
 					$loginOK = false;
 				}
@@ -32,7 +40,9 @@
 		    if($loginOK) {
 		        session_start();
 		        $_SESSION["username"] = $username;
-		       // $_SESSION["empname"] = $name;
+		        $_SESSION["first"] = $fname;
+		        $_SESSION["last"] = $lname;
+		        $_SESSION["login"] = true;
 		        Header("Location:..");
 		    }
 	    }
@@ -52,6 +62,8 @@
 		<link rel="shortcut icon" type="image/x-icon" href="https://instructure-uploads.s3.amazonaws.com/account_45110000000000001/attachments/4984875/favicon.ico" />
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+		<script src="../js/pace.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/pace.css">
 		<!--<script src="..\js\login.js" type="text/javascript"></script>-->
 	</head>
 	<body>
