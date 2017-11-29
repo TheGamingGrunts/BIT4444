@@ -28,7 +28,7 @@
 <body class="fixed-nav sticky-footer bg-light sidenav-toggled" id="page-top">
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" id="mainNav">
-    <img src="http://localhost/site/images/logo-maroon.png" style="height: 5%; width: 5%;">
+    <img src="images/logo-maroon.png" style="height: 5%; width: 5%;">
     <a class="navbar-brand" href="" style="padding-left: 10px;">TimeClock</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
