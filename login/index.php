@@ -7,6 +7,10 @@
 	$password="";
 	$lname = "";
 	$fname = "";
+	$title = "";
+	$status_name = "";
+	$status_date = "";
+	$status_time = "";
 	$error = false;
 	$loginOK = false;
 
@@ -28,10 +32,20 @@
 				//if(strcmp($password, $row["password"]) ==0 ){
 				if (password_verify($password, $row["password"])){
 					$loginOK=true;
-					$result = $mydb->query("SELECT employeedata.LastName AS last, employeedata.FirstName AS first FROM employeedata, login WHERE login.EmployeeID = employeedata.EmployeeID");
+					$result = $mydb->query("SELECT employeedata.LastName AS last, employeedata.FirstName AS first FROM employeedata, login WHERE login.username ='".$username."' AND login.EmployeeID = employeedata.EmployeeID");
 					$row = mysqli_fetch_array($result);
 					$lname = $row["last"];
 					$fname = $row["first"];
+
+					$result = $mydb->query("SELECT jt.JobTitle FROM login l, jobtype jt, employeedata ed WHERE l.Username ='".$username."' AND l.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID");
+					$row = mysqli_fetch_array($result);
+					$title = $row["JobTitle"];
+
+					$result = $mydb -> query("SELECT st.Name, s.LastDate, s.LastTime FROM login l, employeedata ed, status s, statustype st WHERE l.Username ='".$username."'AND l.EmployeeID = ed.EmployeeID AND ed.EmployeeID = s.EmployeeID AND s.StatusCode = st.StatusCode");
+					$row = mysqli_fetch_array($result);
+					$status_name = $row["Name"];
+					$status_date = $row["LastDate"];
+					$status_time = $row["LastTime"];
 				} else {
 					$loginOK = false;
 				}
@@ -42,7 +56,11 @@
 		        $_SESSION["username"] = $username;
 		        $_SESSION["first"] = $fname;
 		        $_SESSION["last"] = $lname;
+		        $_SESSION["title"] = $title;
 		        $_SESSION["login"] = true;
+		        $_SESSION["status_name"] = $status_name;
+		        $_SESSION["status_time"] = $status_time;
+		        $_SESSION["status_date"] = $status_date;
 		        Header("Location:..");
 		    }
 	    }

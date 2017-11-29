@@ -29,7 +29,7 @@
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" id="mainNav">
     <img src="http://localhost/site/images/logo-maroon.png" style="height: 5%; width: 5%;">
-    <a class="navbar-brand" href="index.html" style="padding-left: 10px;">TimeClock</a>
+    <a class="navbar-brand" href="" style="padding-left: 10px;">TimeClock</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -53,6 +53,9 @@
             <span class="nav-link-text">My Account</span>
           </a>
         </li>
+        <?php
+          require_once("Sidebar.php");
+        ?>
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
@@ -68,25 +71,6 @@
           <div class="dropdown-menu" aria-labelledby="messagesDropdown">
             <h6 class="dropdown-header">New Messages:</h6>
             <div class="dropdown-divider"></div>
-            <!--<a class="dropdown-item" href="#">
-              <strong>David Miller</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">Hey there! This new version of SB Admin is pretty awesome! These messages clip off when they reach the end of the box so they don't overflow over to the sides!</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <strong>Jane Smith</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">I was wondering if you could meet for an appointment at 3:00 instead of 4:00. Thanks!</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <strong>John Doe</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">I've sent the final files over to you for review. When you're able to sign off of them let me know and we can discuss distribution.</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item small" href="#">View all messages</a>-->
           </div>
         </li>
         <li class="nav-item dropdown">
@@ -140,7 +124,9 @@
       <div class="text-center">
         <h1>Welcome to TimeClock</h1>
         <hr>
-        <p>Click on the icons to the left to get started!</p>
+        <?php
+        echo "<p>Welcome, ".$_SESSION["first"]."! Click on the icons to the left to get started!";
+        ?>
       </div>
       <!-- Blank div to give the page height to preview the fixed vs. static navbar-->
       <div style="height: 100px;"></div>
