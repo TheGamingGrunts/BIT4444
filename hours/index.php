@@ -18,19 +18,20 @@
   <!-- Bootstrap core CSS-->
   <link href="../css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="../css/sb-admin.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/button.css">
-    <script src="../js/pace.js"></script>
+  <script src="../js/pace.js"></script>
+  <script src="../js/date.js"></script>
   <link rel="stylesheet" type="text/css" href="../css/pace.css">
 </head>
 
 <body class="fixed-nav sticky-footer bg-light sidenav-toggled" id="page-top">
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" id="mainNav">
-    <img src="http://localhost/site/images/logo-maroon.png" style="height: 5%; width: 5%;">
-    <a class="navbar-brand" href="index.html" style="padding-left: 10px;">TimeClock</a>
+    <img src="../images/logo-maroon.png" style="height: 5%; width: 5%;">
+    <a class="navbar-brand" href="../" style="padding-left: 10px;">TimeClock</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -54,6 +55,9 @@
             <span class="nav-link-text">My Account</span>
           </a>
         </li>
+        <?php
+          require_once("../Sidebar.php");
+        ?>
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
@@ -69,25 +73,6 @@
           <div class="dropdown-menu" aria-labelledby="messagesDropdown">
             <h6 class="dropdown-header">New Messages:</h6>
             <div class="dropdown-divider"></div>
-            <!--<a class="dropdown-item" href="#">
-              <strong>David Miller</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">Hey there! This new version of SB Admin is pretty awesome! These messages clip off when they reach the end of the box so they don't overflow over to the sides!</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <strong>Jane Smith</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">I was wondering if you could meet for an appointment at 3:00 instead of 4:00. Thanks!</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <strong>John Doe</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">I've sent the final files over to you for review. When you're able to sign off of them let me know and we can discuss distribution.</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item small" href="#">View all messages</a>-->
           </div>
         </li>
         <li class="nav-item dropdown">
@@ -140,13 +125,54 @@
       </ol>
       <div class="card card-body">
         <div class="col-12 text-center">
-          <button type="button" class="btn btn-success btn-circle btn-xl"><i class="fa fa-check"></i><h5>In</h5></button>
-          <button type="button" class="btn btn-warning btn-circle btn-xl"><i class="fa fa-chain-broken"></i><h5>Break</h5></button>
-          <button type="button" class="btn btn-danger btn-circle btn-xl"><i class="fa fa-times"></i><h5>Out</h5></button>
-          <br>
-          <br>
-          <div id="status"><h1></h1></div>
-          <div id="stattime"><h5></h5></div>
+          <form name="punch">
+            <button id="in" type="submit" formmethod="post" name="in" class="btn btn-success btn-circle btn-xl"><i class="fa fa-check"></i><h5>In</h5></button>
+            <button id="break" type="submit" formmethod="post" name="break" class="btn btn-warning btn-circle btn-xl"><i class="fa fa-chain-broken"></i><h5>Break</h5></button>
+            <button id="out" type="submit" formmethod="post" name="out" class="btn btn-danger btn-circle btn-xl"><i class="fa fa-times"></i><h5>Out</h5></button>
+            <br>
+            <br>
+            <div><h1 id="status"></h1></div>
+            <div><h5 id="stattime"></h5></div>
+            <?php
+              require_once("../Status.php");
+
+              if (isset($_POST["in"])){
+                if ($_SESSION["status_name"] == "Clocked In"){
+                  echo "<script>alert('already clocked in');</script>";
+                }else{
+                  $punchid = mt_rand(10000, 99999); //generate random punch ID
+                  //Insert punch data into punchdata table
+                  $mydb->query("INSERT INTO `punchdata` (`PunchID`, `EmployeeID`, `ModificationID`, `JobCode`, `DateIn`, `TimeIn`, `DateOut`, `TimeOut`, `Break`) VALUES (".$punchid.
+                    ", (SELECT ed.EmployeeID FROM employeedata ed, login l WHERE l.username ='".$_SESSION["username"].
+                      "' AND l.EmployeeID = ed.EmployeeID), NULL, (SELECT d.JobCode FROM department d, login l, employeedata ed WHERE l.username='"
+                      .$_SESSION["username"]."' AND l.EmployeeID = ed.EmployeeID AND ed.DeptCode = d.JobCode), CURDATE(), CURTIME(), NULL, NULL, NULL);");
+                 $result = $mydb->query("SELECT pd.DateIn, pd.TimeIn FROM punchdata pd WHERE pd.PunchID=".$punchid.";"); //get date in and out from most recent punch using the PunchID
+                 $row = mysqli_fetch_array($result);
+
+                 //Update status table
+                 $mydb->query("INSERT INTO `status` (`EmployeeID`, `PunchID`, `StatusCode`, `LastDate`, `LastTime`) VALUES ((SELECT ed.EmployeeID FROM employeedata ed, login l WHERE l.username='".$_SESSION["username"]."' AND l.EmployeeID = ed.EmployeeID),"
+                  .$punchid.", 1, DATE('".$row["DateIn"]."'), TIME('"
+                  .$row["TimeIn"]."')) ON DUPLICATE KEY UPDATE `PunchID`= ".$punchid.", `StatusCode`= 1, `LastDate`=DATE('".$row["DateIn"]."'), `LastTime`=TIME('".$row["TimeIn"]."');");
+                 $_SESSION["status_name"] = "Clocked In"; //update session
+                 //update status
+                 echo "<script>document.getElementById('status').innerHTML = 'Clocked In'</script>";
+                 echo "<script>document.getElementById('stattime').innerHTML = Date.parse('".$row["DateIn"]." ".$row["TimeIn"]."')</script>";  
+                }
+              }elseif (isset($_POST["out"])) { //TODO
+                if ($_SESSION["status_name"] == "Clocked Out"){
+                  echo "<script>alert('already clocked out');</script>";
+                }else{
+                  //clock out
+                }
+              }elseif (isset($_POST["break"])) { //TODO
+                if ($_SESSION["status_name"] == "On Break"){
+                  echo "<script>alert('already on break');</script>";
+                }else{
+                  //break
+                }
+              }
+            ?>
+          </form>
         </div>
       </div>
       <div class="card mb-3">
@@ -226,7 +252,7 @@
       </div>
     </div>
     <!-- Bootstrap core JavaScript-->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="../js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
     <script src="../js/jquery-easing/jquery.easing.min.js"></script>
@@ -240,5 +266,4 @@
     <script src="../js/clock.js"></script>
   </div>
 </body>
-
 </html>
