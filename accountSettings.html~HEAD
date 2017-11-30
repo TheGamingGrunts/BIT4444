@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+<style>
+.box{
+    margin-left:350px; /* half of width */
+    margin-top:25px;  /* half of height */
+    text-align: center;
+  }
+</style>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,13 +66,7 @@
 
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
-                              <li role="presentation" class="vdivide">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#"
-          role="button" aria-haspopup="true" aria-expanded="false">My Account<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Account Settings</a></li>
-            <li><a href="#">Logout</a></li>
-          </ul>
+                                <li><a href="#" class="vdivide">My Account</a></li>
                                 <li><a href="#" id="clock"></a></li>
 
                             </ul>
@@ -73,29 +74,10 @@
                     </div>
                 </nav>
 
-                <h2 class="text-center">Account Settings</h2>
-                <hr>
-                <form action="#">
-                  New Password: <input type="text" name="newpassword">
-                  <br>
-                  <!-- Could potentially have to change name="newpassword" -->
-                  Retype New Password: <input type="text" name="newpassword">
-                  <br>
-                  Email: <input type="text" name="email">
-                  <br>
-                  Phone: <input type="text" name="phone">
-                  <br>
-                  Address: <input type="text" name="phone">
-                  <br>
-                  State: <input type="text" name="state">
-                  <br>
-                  Zip Code: <input type="text" name="zipcode">
-                  <br><br>
-                  <input type="submit" value="Update">
-                  <input type="submit" value="Cancel">
-                </form>
-            </div>
-        </div>
+<h1 class="text-center">Account Settings</h1>
+<h4>Change Password</h4>
+New Password: <input type="password" /><br />
+Confirm New Password: <input type="password" /><br />
 
 
 

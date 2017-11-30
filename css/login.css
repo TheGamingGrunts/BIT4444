@@ -9,5 +9,8 @@
   right: 0;
   min-height: 70px;
   margin-right: 80px;
+}
 
+div.error{
+  color: #42f450;
 }
