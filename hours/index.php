@@ -141,15 +141,20 @@
                   echo "<script>alert('already clocked in');</script>";
                 }else{
                   $punchid = mt_rand(10000, 99999); //generate random punch ID
+                  //Insert punch data into punchdata table
                   $mydb->query("INSERT INTO `punchdata` (`PunchID`, `EmployeeID`, `ModificationID`, `JobCode`, `DateIn`, `TimeIn`, `DateOut`, `TimeOut`, `Break`) VALUES (".$punchid.
                     ", (SELECT ed.EmployeeID FROM employeedata ed, login l WHERE l.username ='".$_SESSION["username"].
                       "' AND l.EmployeeID = ed.EmployeeID), NULL, (SELECT d.JobCode FROM department d, login l, employeedata ed WHERE l.username='"
                       .$_SESSION["username"]."' AND l.EmployeeID = ed.EmployeeID AND ed.DeptCode = d.JobCode), CURDATE(), CURTIME(), NULL, NULL, NULL);");
                  $result = $mydb->query("SELECT pd.DateIn, pd.TimeIn FROM punchdata pd WHERE pd.PunchID=".$punchid.";"); //get date in and out from most recent punch using the PunchID
                  $row = mysqli_fetch_array($result);
-                 $mydb->query("INSERT INTO `status` (`EmployeeID`, `StatusCode`, `LastDate`, `LastTime`) VALUES ((SELECT ed.EmployeeID FROM employeedata ed, login l WHERE l.username='".$_SESSION["username"]."' AND l.EmployeeID = ed.EmployeeID), 1, DATE('".$row["DateIn"]."'), TIME('"
-                  .$row["TimeIn"]."')) ON DUPLICATE KEY UPDATE `StatusCode`= 1, `LastDate`=DATE('".$row["DateIn"]."'), `LastTime`=TIME('".$row["TimeIn"]."');"); //Update status table
+
+                 //Update status table
+                 $mydb->query("INSERT INTO `status` (`EmployeeID`, `PunchID`, `StatusCode`, `LastDate`, `LastTime`) VALUES ((SELECT ed.EmployeeID FROM employeedata ed, login l WHERE l.username='".$_SESSION["username"]."' AND l.EmployeeID = ed.EmployeeID),"
+                  .$punchid.", 1, DATE('".$row["DateIn"]."'), TIME('"
+                  .$row["TimeIn"]."')) ON DUPLICATE KEY UPDATE `PunchID`= ".$punchid.", `StatusCode`= 1, `LastDate`=DATE('".$row["DateIn"]."'), `LastTime`=TIME('".$row["TimeIn"]."');");
                  $_SESSION["status_name"] = "Clocked In"; //update session
+                 //update status
                  echo "<script>document.getElementById('status').innerHTML = 'Clocked In'</script>";
                  echo "<script>document.getElementById('stattime').innerHTML = Date.parse('".$row["DateIn"]." ".$row["TimeIn"]."')</script>";  
                 }
