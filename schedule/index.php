@@ -1,7 +1,7 @@
 <?php
   session_start();
   if (!isset($_SESSION["login"])){
-    Header("Location:login");
+    Header("Location:../login");
   }
 ?>
 
@@ -14,53 +14,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>TimeClock | Home</title>
+  <title>TimeClock | Settings</title>
   <!-- Bootstrap core CSS-->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
   <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="css/sb-admin.css" rel="stylesheet">
-  <script src="js/pace.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/pace.css">
+  <link href="../css/sb-admin.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/button.css">
+    <script src="../js/pace.js"></script>
+  <link rel="stylesheet" type="text/css" href="../css/pace.css">
+  <link rel="stylesheet" type="text/css" href="../css/profile.css">
+      <!-- Bootstrap core JavaScript-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </head>
 
 <body class="fixed-nav sticky-footer bg-light sidenav-toggled" id="page-top">
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" id="mainNav">
-    <img src="images/logo-maroon.png" style="height: 5%; width: 5%;">
-    <a class="navbar-brand" href="" style="padding-left: 10px;">TimeClock</a>
+    <img src="../images/logo-maroon.png" style="height: 5%; width: 5%;">
+    <a class="navbar-brand" href="../" style="padding-left: 10px;">TimeClock</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Home">
-          <a class="nav-link" href="">
+          <a class="nav-link" href="../">
             <i class="fa fa-fw fa-home"></i>
             <span class="nav-link-text">Home</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Hours">
-          <a class="nav-link" href="hours/">
+          <a class="nav-link" href="../hours">
             <i class="fa fa-fw fa-clock-o"></i>
             <span class="nav-link-text">My Hours</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Schedule">
-          <a class="nav-link" href="schedule/">
+          <a class="nav-link" href="../schedule">
             <i class="fa fa-fw fa-calendar"></i>
             <span class="nav-link-text">My Schedule</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Account">
-          <a class="nav-link" href="settings/">
+          <a class="nav-link" href="">
             <i class="fa fa-fw fa-user"></i>
             <span class="nav-link-text">My Account</span>
           </a>
         </li>
         <?php
-          require_once("Sidebar.php");
+          require_once("../Sidebar.php");
         ?>
       </ul>
       <ul class="navbar-nav ml-auto">
@@ -83,7 +87,7 @@
           <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-fw fa-bell"></i>
             <span class="d-lg-none">Alerts
-              <span id="alert-count" class="badge badge-pill badge-warning"></span>
+              <span class="badge badge-pill badge-warning">6 New</span>
             </span>
             <span id="wrapper" class="indicator text-warning d-none d-lg-block">
               <i id="notification" class="fa fa-fw fa-circle" style="display: none;"></i>
@@ -92,9 +96,9 @@
           <div class="dropdown-menu" aria-labelledby="alertsDropdown">
             <h6 class="dropdown-header">New Alerts:</h6>
             <div class="dropdown-divider"></div>
-
+            
             <?php
-              require_once("alerts.php");
+              require_once("../alerts.php");
             ?>
           </div>
         </li>
@@ -122,17 +126,15 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">TimeClock</a>
+          <a href="../">TimeClock</a>
         </li>
-        <li class="breadcrumb-item active">Home</li>
+        <li class="breadcrumb-item active">My Schedule</li>
         <li id="clock" class="pull-right"></li>
       </ol>
-      <div class="text-center">
-        <h1>Welcome to TimeClock</h1>
-        <hr>
-        <?php
-        echo "<p>Welcome, ".$_SESSION["first"]."! Click on the icons to the left to get started!";
-        ?>
+      <div>
+        <div >
+
+        </div>
       </div>
       <!-- Blank div to give the page height to preview the fixed vs. static navbar-->
       <div style="height: 100px;"></div>
@@ -162,24 +164,24 @@
           </div>
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">            
-            <form name="logout" action="logout.php" method="POST">
+            <form name="logout" action="../logout.php" method="POST">
               <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
               <button class="btn btn-primary" formmethod="post" type="submit" name="submit" value="submit">Logout</button>
             </form>
           </div>
         </div>
+        </div>
       </div>
     </div>
-    <!-- Bootstrap core JavaScript-->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="js/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../js/jquery-easing/jquery.easing.min.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin.min.js"></script>
-    <script src="js/clock.js"></script>
+    <script src="../js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
     <!-- Toggle between fixed and static navbar-->
+    <script src="../js/clock.js"></script>
   </div>
 </body>
 

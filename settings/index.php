@@ -51,6 +51,12 @@
             <span class="nav-link-text">My Hours</span>
           </a>
         </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Schedule">
+          <a class="nav-link" href="../schedule">
+            <i class="fa fa-fw fa-calendar"></i>
+            <span class="nav-link-text">My Schedule</span>
+          </a>
+        </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Account">
           <a class="nav-link" href="">
             <i class="fa fa-fw fa-user"></i>
