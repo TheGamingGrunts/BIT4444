@@ -49,6 +49,12 @@
             <span class="nav-link-text">My Hours</span>
           </a>
         </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Schedule">
+          <a class="nav-link" href="../schedule">
+            <i class="fa fa-fw fa-calendar"></i>
+            <span class="nav-link-text">My Schedule</span>
+          </a>
+        </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Account">
           <a class="nav-link" href="../settings/">
             <i class="fa fa-fw fa-user"></i>
@@ -134,11 +140,11 @@
             <div><h1 id="status"></h1></div>
             <div><h5 id="stattime"></h5></div>
             <?php
-              require_once("../Status.php");
+              require("../Status.php");
 
               if (isset($_POST["in"])){
                 if ($_SESSION["status_name"] == "Clocked In"){
-                  echo "<script>alert('already clocked in');</script>";
+                  echo "<script>alert('You are already clocked in!');</script>";
                 }else{
                   $punchid = mt_rand(10000, 99999); //generate random punch ID
                   //Insert punch data into punchdata table
@@ -155,22 +161,27 @@
                   .$row["TimeIn"]."')) ON DUPLICATE KEY UPDATE `PunchID`= ".$punchid.", `StatusCode`= 1, `LastDate`=DATE('".$row["DateIn"]."'), `LastTime`=TIME('".$row["TimeIn"]."');");
                  $_SESSION["status_name"] = "Clocked In"; //update session
                  //update status
-                 echo "<script>document.getElementById('status').innerHTML = 'Clocked In'</script>";
-                 echo "<script>document.getElementById('stattime').innerHTML = Date.parse('".$row["DateIn"]." ".$row["TimeIn"]."')</script>";  
+                 //echo "<script>document.getElementById('status').innerHTML = 'Clocked In'</script>";
+                 //echo "<script>document.getElementById('stattime').innerHTML = Date.parse('".$row["DateIn"]." ".$row["TimeIn"]."')</script>";  
                 }
               }elseif (isset($_POST["out"])) { //TODO
                 if ($_SESSION["status_name"] == "Clocked Out"){
-                  echo "<script>alert('already clocked out');</script>";
+                  echo "<script>alert('You are already clocked out!');</script>";
                 }else{
-                  //clock out
+                  $row = mysqli_fetch_array($mydb->query("SELECT s.PunchID FROM status s, login l, employeedata ed WHERE l.Username='".$_SESSION["username"]."' AND l.EmployeeID = ed.EmployeeID AND ed.EmployeeID = s.EmployeeID;"));
+                  $punchid = $row["PunchID"];
+                  $mydb->query("UPDATE punchdata SET `DateOut`= CURDATE(), `TimeOut`= CURTIME() WHERE `PunchID`=".$punchid.";");
+                  $mydb->query("UPDATE status SET `StatusCode`= 3, `LastDate`=(SELECT DateOut FROM punchdata pd WHERE pd.PunchID=".$punchid."), `LastTime`=(SELECT TimeOut FROM punchdata pd WHERE pd.PunchID=".$punchid.") WHERE status.EmployeeID=(SELECT EmployeeID FROM login l WHERE l.Username='".$_SESSION["username"]."');");
+                  $_SESSION["status_name"] = "Clocked Out";
                 }
               }elseif (isset($_POST["break"])) { //TODO
                 if ($_SESSION["status_name"] == "On Break"){
-                  echo "<script>alert('already on break');</script>";
+                  echo "<script>alert('You are currently on break!');</script>";
                 }else{
                   //break
                 }
               }
+              require("../Status.php");
             ?>
           </form>
         </div>
