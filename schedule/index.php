@@ -24,9 +24,9 @@
   <link rel="stylesheet" href="../css/button.css">
     <script src="../js/pace.js"></script>
   <link rel="stylesheet" type="text/css" href="../css/pace.css">
-  <link rel="stylesheet" type="text/css" href="../css/profile.css">
+
       <!-- Bootstrap core JavaScript-->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </head>
 
 <body class="fixed-nav sticky-footer bg-light sidenav-toggled" id="page-top">
@@ -132,8 +132,13 @@
         <li id="clock" class="pull-right"></li>
       </ol>
       <div>
-        <div >
-
+        <div class="text-center">
+          <h1>My Schedule</h1>
+          <hr>
+        </div>
+        <!--Must be in iFrame, otherwise will screw up whole page style-->
+        <div style="height: 600px;">
+          <iframe src="schedule.php" scrolling="yes" frameborder="0" style="position: relative; height: 100%; width: 100%;"></iframe>
         </div>
       </div>
       <!-- Blank div to give the page height to preview the fixed vs. static navbar-->
