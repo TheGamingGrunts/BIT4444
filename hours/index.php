@@ -160,9 +160,6 @@
                   .$punchid.", 1, DATE('".$row["DateIn"]."'), TIME('"
                   .$row["TimeIn"]."')) ON DUPLICATE KEY UPDATE `PunchID`= ".$punchid.", `StatusCode`= 1, `LastDate`=DATE('".$row["DateIn"]."'), `LastTime`=TIME('".$row["TimeIn"]."');");
                  $_SESSION["status_name"] = "Clocked In"; //update session
-                 //update status
-                 //echo "<script>document.getElementById('status').innerHTML = 'Clocked In'</script>";
-                 //echo "<script>document.getElementById('stattime').innerHTML = Date.parse('".$row["DateIn"]." ".$row["TimeIn"]."')</script>";  
                 }
               }elseif (isset($_POST["out"])) { //TODO
                 if ($_SESSION["status_name"] == "Clocked Out"){
