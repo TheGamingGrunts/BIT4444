@@ -40,70 +40,71 @@
 					session_start();
 					require_once("../login/db.php");
 					$result = $mydb->query("SELECT * FROM schedule s, login l WHERE l.Username='".$_SESSION["username"]."' AND l.EmployeeID = s.EmployeeID;");
-					$all = mysqli_fetch_array($result);
-					                  
-					$main = "SELECT s.StartTime, s.EndTime FROM shift s, schedule sc WHERE sc.EmployeeID=".$all["EmployeeID"]."";
-					$sun = mysqli_fetch_array($mydb->query($main." AND sc.Sunday=s.ShiftCode"));
-					$mon = mysqli_fetch_array($mydb->query($main." AND sc.Monday=s.ShiftCode"));
-					$tue = mysqli_fetch_array($mydb->query($main." AND sc.Tuesday=s.ShiftCode"));
-					$wed = mysqli_fetch_array($mydb->query($main." AND sc.Wednesday=s.ShiftCode"));
-					$thu = mysqli_fetch_array($mydb->query($main." AND sc.Thursday=s.ShiftCode"));
-					$fri = mysqli_fetch_array($mydb->query($main." AND sc.Friday=s.ShiftCode"));
-					$sat = mysqli_fetch_array($mydb->query($main." AND sc.Saturday=s.ShiftCode"));
+					//add proper display for no schedule
+					while($all = mysqli_fetch_array($result)){                
+						$main = "SELECT s.StartTime, s.EndTime FROM shift s, schedule sc WHERE sc.EmployeeID=".$all["EmployeeID"]."";
+						$sun = mysqli_fetch_array($mydb->query($main." AND sc.Sunday=s.ShiftCode"));
+						$mon = mysqli_fetch_array($mydb->query($main." AND sc.Monday=s.ShiftCode"));
+						$tue = mysqli_fetch_array($mydb->query($main." AND sc.Tuesday=s.ShiftCode"));
+						$wed = mysqli_fetch_array($mydb->query($main." AND sc.Wednesday=s.ShiftCode"));
+						$thu = mysqli_fetch_array($mydb->query($main." AND sc.Thursday=s.ShiftCode"));
+						$fri = mysqli_fetch_array($mydb->query($main." AND sc.Friday=s.ShiftCode"));
+						$sat = mysqli_fetch_array($mydb->query($main." AND sc.Saturday=s.ShiftCode"));
 
 
-                  echo "
-                  	<li class='events-group'>
-                      <div class='top-info'><span>Monday</span></div>
-                      <ul>
-                        <li class='single-event' data-start='".$mon["StartTime"]."' data-end='".$mon["EndTime"]."' data-content='event-abs-circuit' data-event='event-1'>
-                          <a href='#0'>
-                            <em class='event-name'>Monday Shift</em>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class='events-group'>
-                      <div class='top-info'><span>Tuesday</span></div>
-                      <ul>
-                        <li class='single-event' data-start='".$tue["StartTime"]."' data-end='".$tue["EndTime"]."' data-content='event-abs-circuit' data-event='event-2'>
-                          <a href='#0'>
-                            <em class='event-name'>Tuesday Shift</em>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class='events-group'>
-                      <div class='top-info'><span>Wednesday</span></div>
-                      <ul>
-                        <li class='single-event' data-start='".$wed["StartTime"]."' data-end='".$wed["EndTime"]."' data-content='event-abs-circuit' data-event='event-3'>
-                          <a href='#0'>
-                            <em class='event-name'>Wednesday Shift</em>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class='events-group'>
-                      <div class='top-info'><span>Thursday</span></div>
-                      <ul>
-                        <li class='single-event' data-start='".$thu["StartTime"]."' data-end='".$thu["EndTime"]."' data-content='event-abs-circuit' data-event='event-4'>
-                          <a href='#0'>
-                            <em class='event-name'>Thursday Shift</em>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class='events-group'>
-                      <div class='top-info'><span>Friday</span></div>
-                      <ul>
-                        <li class='single-event' data-start='".$fri["StartTime"]."' data-end='".$fri["EndTime"]."' data-content='event-abs-circuit' data-event='event-1'>
-                          <a href='#0'>
-                            <em class='event-name'>Friday Shift</em>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                  ";
+	                  echo "
+	                  	<li class='events-group'>
+	                      <div class='top-info'><span>Monday</span></div>
+	                      <ul>
+	                        <li class='single-event' data-start='".$mon["StartTime"]."' data-end='".$mon["EndTime"]."' data-content='event-abs-circuit' data-event='event-1'>
+	                          <a href='#0'>
+	                            <em class='event-name'>Monday Shift</em>
+	                          </a>
+	                        </li>
+	                      </ul>
+	                    </li>
+	                    <li class='events-group'>
+	                      <div class='top-info'><span>Tuesday</span></div>
+	                      <ul>
+	                        <li class='single-event' data-start='".$tue["StartTime"]."' data-end='".$tue["EndTime"]."' data-content='event-abs-circuit' data-event='event-2'>
+	                          <a href='#0'>
+	                            <em class='event-name'>Tuesday Shift</em>
+	                          </a>
+	                        </li>
+	                      </ul>
+	                    </li>
+	                    <li class='events-group'>
+	                      <div class='top-info'><span>Wednesday</span></div>
+	                      <ul>
+	                        <li class='single-event' data-start='".$wed["StartTime"]."' data-end='".$wed["EndTime"]."' data-content='event-abs-circuit' data-event='event-3'>
+	                          <a href='#0'>
+	                            <em class='event-name'>Wednesday Shift</em>
+	                          </a>
+	                        </li>
+	                      </ul>
+	                    </li>
+	                    <li class='events-group'>
+	                      <div class='top-info'><span>Thursday</span></div>
+	                      <ul>
+	                        <li class='single-event' data-start='".$thu["StartTime"]."' data-end='".$thu["EndTime"]."' data-content='event-abs-circuit' data-event='event-4'>
+	                          <a href='#0'>
+	                            <em class='event-name'>Thursday Shift</em>
+	                          </a>
+	                        </li>
+	                      </ul>
+	                    </li>
+	                    <li class='events-group'>
+	                      <div class='top-info'><span>Friday</span></div>
+	                      <ul>
+	                        <li class='single-event' data-start='".$fri["StartTime"]."' data-end='".$fri["EndTime"]."' data-content='event-abs-circuit' data-event='event-1'>
+	                          <a href='#0'>
+	                            <em class='event-name'>Friday Shift</em>
+	                          </a>
+	                        </li>
+	                      </ul>
+	                    </li>
+	                  ";
+	              }
                 ?>
               </ul>
             </div>
