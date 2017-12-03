@@ -38,8 +38,13 @@
 			<ul>
 				<?php
 					session_start();
+					$result = "";
 					require_once("../login/db.php");
-					$result = $mydb->query("SELECT * FROM schedule s, login l WHERE l.Username='".$_SESSION["username"]."' AND l.EmployeeID = s.EmployeeID;");
+					if (isset($_GET["manager"])){
+						$result = $mydb->query("SELECT * FROM schedule s WHERE s.EmployeeID=".$_SESSION["empid"].";");
+					}else{
+						$result = $mydb->query("SELECT * FROM schedule s, login l WHERE l.Username='".$_SESSION["username"]."' AND l.EmployeeID = s.EmployeeID;");
+					}
 					//add proper display for no schedule
 					while($all = mysqli_fetch_array($result)){                
 						$main = "SELECT s.StartTime, s.EndTime FROM shift s, schedule sc WHERE sc.EmployeeID=".$all["EmployeeID"]."";
