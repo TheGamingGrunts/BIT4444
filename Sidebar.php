@@ -7,22 +7,42 @@
   function getLink($dir){
     $directory = basename(getcwd()); //get current directory name
     $path = "";
-    switch ($directory) {
-      case 'hours':
-        $path = "../manager/".$dir;
-        break;
-      case 'settings':
-        $path = "../manager/".$dir;
-        break;
-      case 'whos-here':
-        $path = "../manager/".$dir;
-        break;
-      case 'schedule':
-        $path = "../manager/".$dir;
-        break;
-      default:
-        $path = "manager/".$dir;
-        break;
+    if (containsWord(dirname(getcwd()), "manager")){
+      switch ($directory) {
+        case 'hours':
+          $path = "../../manager/".$dir;
+          break;
+        case 'settings':
+          $path = "../../manager/".$dir;
+          break;
+        case 'whos-here':
+          $path = "../../manager/".$dir;
+          break;
+        case 'schedule':
+          $path = "../../manager/".$dir;
+          break;
+        default:
+          $path = "../manager/".$dir;
+          break;
+        }
+    }else{
+      switch ($directory) {
+        case 'hours':
+          $path = "../manager/".$dir;
+          break;
+        case 'settings':
+          $path = "../manager/".$dir;
+          break;
+        case 'whos-here':
+          $path = "../manager/".$dir;
+          break;
+        case 'schedule':
+          $path = "../manager/".$dir;
+          break;
+        default:
+          $path = "manager/".$dir;
+          break;
+      }
     }
     return $path;
   }
