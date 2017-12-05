@@ -7,22 +7,42 @@
   function getLink($dir){
     $directory = basename(getcwd()); //get current directory name
     $path = "";
-    switch ($directory) {
-      case 'hours':
-        $path = "../manager/".$dir;
-        break;
-      case 'settings':
-        $path = "../manager/".$dir;
-        break;
-      case 'whos-here':
-        $path = "../manager/".$dir;
-        break;
-      case 'schedule':
-        $path = "../manager/".$dir;
-        break;
-      default:
-        $path = "manager/".$dir;
-        break;
+    if (containsWord(dirname(getcwd()), "manager")){
+      switch ($directory) {
+        case 'hours':
+          $path = "../../manager/".$dir;
+          break;
+        case 'settings':
+          $path = "../../manager/".$dir;
+          break;
+        case 'whos-here':
+          $path = "../../manager/".$dir;
+          break;
+        case 'schedule':
+          $path = "../../manager/".$dir;
+          break;
+        default:
+          $path = "../manager/".$dir;
+          break;
+        }
+    }else{
+      switch ($directory) {
+        case 'hours':
+          $path = "../manager/".$dir;
+          break;
+        case 'settings':
+          $path = "../manager/".$dir;
+          break;
+        case 'whos-here':
+          $path = "../manager/".$dir;
+          break;
+        case 'schedule':
+          $path = "../manager/".$dir;
+          break;
+        default:
+          $path = "manager/".$dir;
+          break;
+      }
     }
     return $path;
   }
@@ -43,7 +63,7 @@
       </li>
       <li class='nav-item' data-toggle='tooltip' data-placement='right' title='Edit Schedule'>
         <a class='nav-link' href='".getLink("schedule")."'>
-           <i class='fa fa-fw fa-calendar-minus-o'></i>
+           <i class='fa fa-fw fa-calendar-plus-o'></i>
           <span class='nav-link-text'>Edit Schedule</span>
         </a>
       </li>
