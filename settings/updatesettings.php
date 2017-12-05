@@ -131,47 +131,87 @@
         <li class="breadcrumb-item active">My Account</li>
         <li id="clock" class="pull-right"></li>
       </ol>
-      <div>
-        <div >
-          <div class="col-md-7 ">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 >User Profile</h4>
-              </div>
-              <div class="panel-body">
-                <div class="box box-info">
-                  <div class="box-body">
-                    <div class="col-sm-6">
-                      <div  align="center">
-                        <img alt="User Pic" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive">
-                        <input id="profile-image-upload" class="hidden" type="file">
-                        <div style="color:#999;" >click here to change profile image</div>
-                        <!--Upload Image Js And Css-->
-                      </div>
-                      <br>
-                      <!-- /input-group -->
-                    </div>
-                    <div class="col-sm-6">
-                      <h4 style="color:#00b1b1;"><?php echo $_SESSION['first']." ".$_SESSION['last'];?></h4>
-                      <span>
-                        <!--<p>Aspirant</p> INSERT RANK/TITLE HERE-->
-                      </span>
-                    </div>
-                    <div class="clearfix"></div>
-                    <hr style="margin:5px 0 5px 0;">
-                    <div class="col-sm-5 col-xs-6 title " >First Name:</div>
-                    <div class="col-sm-7 col-xs-6 "><?php echo $_SESSION['first']?></div>
-                    <div class="clearfix"></div>
-                    <div class="bot-border"></div>
-                    <div class="col-sm-5 col-xs-6 title " >Last Name:</div>
-                    <div class="col-sm-7"> <?php echo $_SESSION['last'];?></div>
-                    <div class="clearfix"></div>
-                    <div class="bot-border"></div>
-                    <div class="col-sm-5 col-xs-6 title " >Email:</div>
-                    <div class="col-sm-7"></div>
-                    <div class="clearfix"></div>
-                    <br><br>
-                    <input type="button" name="edit" value="Edit" onClick="window.location='updatesettings.php'">
+      <?php
+      // define variables and set to empty values
+      $nameErr = $emailErr = $passwordErr = $passwordconfirmErr = "";
+      $name = $email = $password = $passwordconfirm = "";
+
+      if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (empty($_POST["name"])) {
+          $nameErr = "Name is required";
+        } else {
+          $name = test_input($_POST["name"]);
+          // check if name only contains letters and whitespace
+          if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
+            $nameErr = "Only letters and spaces allowed";
+          }
+        }
+
+        if (empty($_POST["email"])) {
+          $emailErr = "Email is required";
+        } else {
+          $email = test_input($_POST["email"]);
+          // check if e-mail address is well-formed
+          if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format";
+          }
+        }
+
+        if (empty($_POST["password"])) {
+          $passwordErr = "Password is required";
+        } else {
+          $password = test_input($_POST["password"]);
+        }
+
+        if (empty($_POST["passwordconfirm"])) {
+          $passwordconfirmErr = "Password does not match";
+        } else {
+          $passwordconfirm = test_input($_POST["passwordconfirm"]);
+          // check if password matches
+          if ($password !== $passwordconfirm) {
+            $passwordconfirmErr = "Password does not match";
+          }
+        }
+      }
+
+
+      function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+      }
+      ?>
+
+      <h3>Change Your Information</h3>
+      <p><span class="error">All fields are required.</span></p>
+      <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        Name: <input type="text" name="name" value="<?php echo $name;?>">
+        <span class="error"><?php echo $nameErr;?></span>
+        <br><br>
+        E-mail: <input type="text" name="email" value="<?php echo $email;?>">
+        <span class="error"><?php echo $emailErr;?></span>
+        <br><br>
+        Password: <input type="password" name="password" value="<?php echo $password;?>">
+        <span class="error"><?php echo $passwordErr;?></span>
+        <br><br>
+        Confirm Password: <input type="password" name="passwordconfirm" value="<?php echo $passwordconfirm;?>">
+        <span class="error"><?php echo $passwordconfirmErr;?></span>
+        <br><br>
+        <input type="submit" name="submit" value="Submit">
+        <input type="button" name="cancel" value="Cancel" onClick="window.location='index.php'">
+      </form>
+
+      <?php
+      echo $name;
+      echo "<br>";
+      echo $email;
+      echo "<br>";
+      echo $password;
+      echo "<br>";
+      echo $passwordconfirm;
+      ?>
+
                     <!-- /.box-body -->
                   </div>
                   <!-- /.box -->
