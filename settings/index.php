@@ -24,7 +24,8 @@
   <link rel="stylesheet" href="../css/button.css">
     <script src="../js/pace.js"></script>
   <link rel="stylesheet" type="text/css" href="../css/pace.css">
-  <link rel="stylesheet" type="text/css" href="../css/profile.css">
+  <link rel="stylesheet" type="text/css" href="../css/settings.css">
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/paper/bootstrap.min.css">
       <!-- Bootstrap core JavaScript-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </head>
@@ -132,60 +133,162 @@
         <li id="clock" class="pull-right"></li>
       </ol>
       <div>
-        <div >
-          <div class="col-md-7 ">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 >User Profile</h4>
-              </div>
-              <div class="panel-body">
-                <div class="box box-info">
-                  <div class="box-body">
-                    <div class="col-sm-6">
-                      <div  align="center">
-                        <img alt="User Pic" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive">
-                        <input id="profile-image-upload" class="hidden" type="file">
-                        <div style="color:#999;" >click here to change profile image</div>
-                        <!--Upload Image Js And Css-->
-                      </div>
-                      <br>
-                      <!-- /input-group -->
-                    </div>
-                    <div class="col-sm-6">
-                      <h4 style="color:#00b1b1;"><?php echo $_SESSION['first']." ".$_SESSION['last'];?></h4>
-                      <span>
-                        <!--<p>Aspirant</p> INSERT RANK/TITLE HERE-->
-                      </span>
-                    </div>
-                    <div class="clearfix"></div>
-                    <hr style="margin:5px 0 5px 0;">
-                    <div class="col-sm-5 col-xs-6 title " >First Name:</div>
-                    <div class="col-sm-7 col-xs-6 "><?php echo $_SESSION['first']?></div>
-                    <div class="clearfix"></div>
-                    <div class="bot-border"></div>
-                    <div class="col-sm-5 col-xs-6 title " >Last Name:</div>
-                    <div class="col-sm-7"> <?php echo $_SESSION['last'];?></div>
-                    <div class="clearfix"></div>
-                    <div class="bot-border"></div>
-                    <div class="col-sm-5 col-xs-6 title " >Email:</div>
-                    <div class="col-sm-7"></div>
-                    <div class="clearfix"></div>
-                    <br><br>
-                    <input type="button" name="edit" value="Edit" onClick="window.location='updatesettings.php'">
-                    <!-- /.box-body -->
-                  </div>
-                  <!-- /.box -->
+        <div class="">
+            <!-- UI - X Starts -->
+            <div class="ui-67">
+            
+              <!-- Head Starts -->
+              <div class="ui-head bg-lblue">
+                <!-- Details -->
+                <div class="ui-details">
+                  <!-- Name -->
+                  <h3 id="name-header"><?php echo $_SESSION["first"]." ".$_SESSION["last"];?></h3>
+                  <!-- Designation -->
+                  <h4><?php echo $_SESSION["title"].", ".$_SESSION["dept"];?></h4>
+                </div>
+                <!-- Image -->
+                <div class="ui-image">
+                  <!-- User Image -->
+                  <img src="https://api.adorable.io/avatars/285/abott@adorable.png" alt="Profile Picture" class="img-responsive" width="100" height="100">
                 </div>
               </div>
+              <!-- Head Ends -->
+              
+              <!-- Content Starts -->
+              <div class="ui-content">
+
+                <div class="row">
+                  
+                  <div class="col-sm-8 col-md-8 col-lg-8 col-lg-offset-2 acc-col">
+                    <section>
+                      <h3>Contact Information</h3>
+
+                      <?php
+                        require_once("../login/db.php");
+                        $result = $mydb->query("SELECT ed.LastName AS last, ed.FirstName AS first, ed.EmailAddress, ed.Phone, ed.Address, ed.City, ed.State, ed.Zip FROM employeedata ed, login WHERE login.username ='".$_SESSION["username"]."' AND login.EmployeeID = ed.EmployeeID");
+                        $row = mysqli_fetch_array($result);
+                        $last = $row["last"];
+                        $first = $row["first"];
+                        $email = $row["EmailAddress"];
+                        $address = $row["Address"];
+                        $phone = $row["Phone"];
+                        $city = $row["City"];
+                        $state = $row["State"];
+                        $zip = $row["Zip"];
+                      ?>
+                      <form class="ng-pristine ng-valid" action="index.php">
+                        <div class="row">
+                           <div class="col-sm-6">
+                            <label class="control-label">First Name:</label>
+                              <input type="text" class="form-control" id="first" name="first" value=<?php echo "'$first'";?>>
+                          </div>   
+                          <div class="col-sm-6">
+                            <label class="control-label">Last Name:</label>
+                              <input type="text" class="form-control" id="last" name="last" value=<?php echo "'$last'";?>>
+                          </div>               
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <label class="control-label">Email:</label>
+                              <input type="email" class="form-control" id="email" name="email" value=<?php echo "'$email'";?>>
+                          </div>
+                          <div class="col-sm-6">
+                            <label class="control-label">Phone Number:</label>
+                              <input type="text" class="form-control" id="phone" name="phone" value=<?php echo "'$phone'";?>>
+                          </div>  
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <label class="control-label">Address:</label>
+                              <input type="text" class="form-control" id="address" name="address" value=<?php echo "'$address'";?>>
+                          </div>
+                          <div class="col-sm-4">
+                            <label class="control-label">City:</label>
+                              <input type="text" class="form-control" id="city" name="city" value=<?php echo "'$city'";?>>
+                          </div> 
+
+                          <div class="col-sm-2">
+                            <label class="control-label">State/Province:</label>
+                              <input type="text" class="form-control" id="state" name="state" value=<?php echo "'$state'";?>>
+                          </div> 
+
+                          <div class="col-sm-2">
+                            <label class="control-label">Zip Code:</label>
+                              <input type="number" class="form-control" id="zip" name="zip" value=<?php echo "'$zip'";?>>
+                          </div> 
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="btn-div">
+                            <button type="submit" formmethod="post" name="updateInfo" class="btn btn-primary pull-right">Update</button>
+                          </div>
+                        </div>
+                        <?php
+                          if(isset($_POST["updateInfo"])){
+                            require_once("../login/db.php");
+                            $mydb->query("UPDATE employeedata ed, login l SET ed.FirstName='".$_POST["first"]."', ed.LastName='".$_POST["last"]."', ed.EmailAddress='".$_POST["email"]."', ed.Phone='".$_POST["phone"]."', ed.Address='"
+                              .$_POST["address"]."', ed.City='".$_POST["city"]."', ed.State='".$_POST["state"]."', ed.Zip=".$_POST["zip"]." WHERE l.username='".$_SESSION["username"]."' AND l.EmployeeID=ed.EmployeeID;");
+                            echo "<script>alert('Contact Information Updated Successfully!');</script>";
+                          }
+                        ?>
+                        </form>   
+                    </section>
+
+                  <section>
+                    <h3>Change Password</h3>
+                    <form role="form">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <label class="control-label">Password:</label>
+                          <div>
+                            <input type="password" class="form-control" id="pass1" name="pass1">
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <label class="control-label">Confirm:</label>
+                          <div>
+                            <input type="password" class="form-control" id="pass2" name="pass2">
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="btn-div">
+                            <button type="submit" formmethod="post" name="updatePass" class="btn btn-primary pull-right">Update</button>
+                          </div>
+                        </div>          
+                      </div>
+                      <?php
+                        if (isset($_POST["updatePass"])){
+                          if ($_POST["pass1"] != "" && $_POST["pass2"] != ""){
+                            if ($_POST["pass1"] == $_POST["pass2"]){
+                              require_once("../login/db.php");
+                              $mydb->query("UPDATE login l SET l.Password='".password_hash($_POST["pass1"], PASSWORD_DEFAULT)."' WHERE l.username='".$_SESSION["username"]."';");
+                              echo "<script>alert('Password Updated Successfully!');</script>";
+                            }else{
+                              echo "
+                                <div class='col-sm-12'>
+                                    <p class='text-danger'>Password fields must match!</p>      
+                                </div>
+                            ";
+                            }
+                          }else{
+                            echo "
+                            <div class='col-sm-12'>
+                                <p class='text-danger'>Password fields cannot be blank!</p>      
+                            </div>
+                            ";
+                          }
+                        }
+                      ?>
+                    </form>  
+                  </section>
+                  </div>
+                  <!-- col-8 -->
+                </div>
+
+              </div>
+              <!-- Content Ends -->
             </div>
-          </div>
-          <script>
-            $(function() {
-            $('#profile-image1').on('click', function() {
-            $('#profile-image-upload').click();
-            });
-            });
-          </script>
+            <!-- UI - X Ends -->
         </div>
       </div>
       <!-- Blank div to give the page height to preview the fixed vs. static navbar-->
