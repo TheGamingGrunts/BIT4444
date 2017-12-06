@@ -8,6 +8,7 @@
 	$lname = "";
 	$fname = "";
 	$title = "";
+	$dept = "";
 	$status_name = "";
 	$status_date = "";
 	$status_time = "";
@@ -37,9 +38,10 @@
 					$lname = $row["last"];
 					$fname = $row["first"];
 
-					$result = $mydb->query("SELECT jt.JobTitle FROM login l, jobtype jt, employeedata ed WHERE l.Username ='".$username."' AND l.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID");
+					$result = $mydb->query("SELECT jt.JobTitle, d.Title FROM login l, jobtype jt, employeedata ed, department d WHERE l.Username ='".$username."' AND l.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode");
 					$row = mysqli_fetch_array($result);
 					$title = $row["JobTitle"];
+					$dept = $row["Title"];
 
 					$result = $mydb -> query("SELECT st.Name, s.LastDate, s.LastTime FROM login l, employeedata ed, status s, statustype st WHERE l.Username ='".$username."'AND l.EmployeeID = ed.EmployeeID AND ed.EmployeeID = s.EmployeeID AND s.StatusCode = st.StatusCode");
 					$row = mysqli_fetch_array($result);
@@ -57,6 +59,7 @@
 		        $_SESSION["first"] = $fname;
 		        $_SESSION["last"] = $lname;
 		        $_SESSION["title"] = $title;
+		        $_SESSION["dept"] = $dept;
 		        $_SESSION["login"] = true;
 		        $_SESSION["status_name"] = $status_name;
 		        $_SESSION["status_time"] = $status_time;
