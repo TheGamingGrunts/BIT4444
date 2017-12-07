@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>TimeClock | Who's Here</title>
+  <title>TimeClock | Settings</title>
   <!-- Bootstrap core CSS-->
   <link href="../../css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -22,13 +22,12 @@
   <link rel="shortcut icon" type="image/x-icon" href="https://instructure-uploads.s3.amazonaws.com/account_45110000000000001/attachments/4984875/favicon.ico" />
   <!-- Custom styles for this template-->
   <link href="../../css/sb-admin.css" rel="stylesheet">
-  <link href="../../css/sb-admin.css" rel="stylesheet">
   <link rel="stylesheet" href="../../css/button.css">
-  <script src="../../js/pace.js"></script>
+    <script src="../../js/pace.js"></script>
   <link rel="stylesheet" type="text/css" href="../../css/pace.css">
   <link href="../../css/select2.min.css" rel="stylesheet" />
       <!-- Bootstrap core JavaScript-->
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </head>
 
 <body class="fixed-nav sticky-footer bg-light sidenav-toggled" id="page-top">
@@ -131,58 +130,79 @@
         <li class="breadcrumb-item">
           <a href="../../">TimeClock</a>
         </li>
-        <li class="breadcrumb-item active">Who's Here</li>
+        <li class="breadcrumb-item active">Edit Hours</li>
         <li id="clock" class="pull-right"></li>
       </ol>
       <div>
-        <div class="text-center">
-          <h1>Who's Here</h1>
-          <hr>
-        </div>
-        <br>
-        <div class="card mb-3">
-        <div class="card-header"><i class="fa fa-table"></i> Who's Here</div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Employee ID</th>
-                  <th>Date In</th>
-                  <th>Time In</th>
-                  <th>Department</th>
-                </tr>
-              </thead>
-              <!--<tfoot>
-                <tr>
-                  <th>Name</th>
-                  <th>Employee ID</th>
-                  <th>Date In</th>
-                  <th>Time In</th>
-                  <th>Department</th>
-                </tr>
-              </tfoot>-->
-              <tbody>
-                  <?php
+        <div class="text-center center-block">
+          <h1>Edit Hours</h1>
+          <br>
+          <div class="container">
+            <form class="col-6 col-md-4 pull-left" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+              <div class="input-group">
+                <input name="search" class="form-control" type="text" placeholder="Search employees...">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary" type="submit" formmethod="post" name="go">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </span>
+              </div>
+            </form>
+            <div class="card mb-3">
+            <div id="tablename" class="card-header"><i class="fa fa-table"></i></div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>PunchID</th>
+                      <th>Job Code</th>
+                      <th>Time In</th>
+                      <th>Time Out</th>
+                      <th>Rate</th>
+                      <th>Hours</th>
+                    </tr>
+                  </thead>
+                  <!--<tfoot>
+                    <tr>
+                      <th>Name</th>
+                      <th>Employee ID</th>
+                      <th>Date In</th>
+                      <th>Time In</th>
+                      <th>Department</th>
+                    </tr>
+                  </tfoot>-->
+                  <tbody>
+                      <?php
+                      ?>
+                    <?php
+                      if (isset($_POST["go"])){
+                        require_once("../../login/db.php");
+                        $search = explode(" ", $_POST["search"]);
+                        $result = $mydb->query("SELECT ed.EmployeeID, ed.LastName, ed.FirstName FROM employeedata ed WHERE (ed.LastName LIKE '".$search[0]."' AND ed.FirstName LIKE '".$search[1].
+                          "') OR (ed.LastName LIKE '".$search[1]."' AND ed.FirstName LIKE '".$search[0]."')");
+                        $row1 = mysqli_fetch_array($result);
+                        echo "<script>document.getElementById('tablename').innerHTML=' ".$row1["FirstName"]."&#8217;s Hours';</script>";
+                        $result2 = $mydb->query("SELECT DISTINCT pd.PunchID, pd.DateIn, pd.TimeIn, pd.DateOut, pd.TimeOut, jt.JobTitle, d.Title as 'Dept', jt.JobSalary, TIMESTAMPDIFF(SECOND, CONCAT(pd.DateIn,' ', pd.TimeIn), CONCAT(pd.DateOut,' ', pd.TimeOut))/3600.0 AS 'Hours' FROM punchdata pd, login, employeedata ed, jobtype jt, department d WHERE pd.EmployeeID=".$row1["EmployeeID"]." AND pd.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode");
+                        $count = 0;
+                        while($row = mysqli_fetch_array($result2)){
+                          $count++;
+                          echo "<tr><td>".$row["PunchID"]."</td><td>".$row["Dept"]."</td><td>".$row["DateIn"]." ".$row["TimeIn"]."</td><td>".$row["DateOut"]." ".$row["TimeOut"]."</td><td>".$row["JobSalary"]."</td><td>".$row["Hours"]."</td><tr>"; 
+                        }
 
-                    require_once("../../login/db.php");
-                    $result = $mydb->query("SELECT CONCAT(ed.FirstName, ' ', ed.LastName) as name, ed.EmployeeID as id, pd.DateIn as dIn, pd.TimeIn as tIn, d.Title FROM employeedata ed, punchdata pd, department d, status s WHERE s.StatusCode = 1 AND s.EmployeeID = ed.EmployeeID AND ed.DeptCode = d.JobCode AND s.PunchID = pd.PunchID");
-                    
-                    $count = 0;
-                    while($row = mysqli_fetch_array($result)){
-                      $count++;
-                      echo "<tr><td>".$row["name"]."</td><td>".$row["id"]."</td><td>".$row["dIn"]."</td><td>".$row["tIn"]."</td><td>".$row["Title"]."</td></tr>"; 
-                    }
+                        if ($count == 0){
+                          echo "<tr><td class='text-danger'>No hours on record <i class='fa fa-frown-o' aria-hidden='true'></i></td></tr>";
+                        }
 
-                    if ($count == 0){
-                      echo "<tr><td class='text-danger'>No employees clocked in <i class='fa fa-frown-o' aria-hidden='true'></i></td></tr>";
-                    }
-                  ?>
-              </tbody>
-            </table>
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
           </div>
-      </div>
+          </div>
+          </div>
+        </div>
       </div>
       <!-- Blank div to give the page height to preview the fixed vs. static navbar-->
       <div style="height: 100px;"></div>
@@ -221,7 +241,8 @@
         </div>
       </div>
     </div>
-    <script src="../../js/bootstrap.bundle.min.js"></script>
+  </div>
+      <script src="../../js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
     <script src="../../js/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
@@ -231,6 +252,11 @@
     <script src="../../js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
     <script src="../../js/sb-admin-datatables.min.js"></script>
+    <!-- Custom scripts for this page-->
+    <!-- Toggle between fixed and static navbar-->
+    <script src="../../js/clock.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
+    <script src="../../js/select2.min.js"></script>
   </div>
 </body>
 </html>
