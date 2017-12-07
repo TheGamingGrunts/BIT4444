@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Forecast</title>
+	<script src="https://unpkg.com/simple-statistics@5.2.0/dist/simple-statistics.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<style>
+	.line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 1.5px;
+	}
+	p {
+		margin-left: 350px;
+	}
+
+	</style>
+</head>
+<body>
+
+	Hours Worked
+
+	<script>
+
+
+var dataset = [1, 6, 3, 4, 10, 4, 9]
+
+var margin = {top: 10, right: 10, bottom: 30, left: 50};
+var width = 600 - margin.left - margin.right;
+var height = 300 - margin.top - margin.bottom;
+
+var svg = d3.select("body").append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var forecast_x = 3
+var lrdata = dataset.map(function(v, i) { return [i, v]})
+var lr = ss.linearRegressionLine(ss.linearRegression(lrdata));
+
+var xScale = d3.scale.linear()
+	.domain([0, dataset.length*forecast_x])
+	.range([0, width]);
+
+var yScale = d3.scale.linear()
+	.domain([0, Math.max(d3.max(dataset), lr(dataset.length*forecast_x))])
+	.range([height, 0]);
+
+var xAxis = d3.svg.axis()
+	.scale(xScale)
+	.orient("bottom");
+
+var yAxis = d3.svg.axis()
+	.scale(yScale)
+	.orient("left");
+
+svg.append("g").
+	attr("transform", "translate(0, " + height + ")").
+	call(xAxis);
+
+svg.append("g").
+	call(yAxis)
+
+svg.selectAll('.domain')
+	.attr({
+		stroke: "grey",
+		"stroke-width": 1,
+		fill: "none",
+	})
+
+var line = d3.svg.line()
+	.x(function(d, i) { return xScale(i); })
+	.y(function(d) { return yScale(d); });
+
+svg.append("path")
+	.datum(dataset)
+	.attr({
+		d: line,
+		stroke: "blue",
+		"stroke-width": 2,
+		fill: "none",
+	});
+
+var lrline = d3.svg.line()
+	.x(function(d, i) { return xScale(i); })
+	.y(function(d, i) { return yScale(lr(i)); });
+
+svg.append("path")
+	.datum(Array(dataset.length*forecast_x))
+	.attr({
+		d: lrline,
+		stroke: "green",
+		"stroke-width": 1,
+		fill: "none",
+		"stroke-dasharray": "5,5",
+	});
+
+svg.selectAll()
+	.data(dataset)
+	.enter()
+	.append("circle")
+	.attr({
+		r: 3,
+		cx: function(d, i) { return xScale(i); },
+		cy: function(d) { return yScale(d); },
+	});
+
+</script>
+
+<p>
+	Number of Deparments
+</p>
+</body>
+  </html>
