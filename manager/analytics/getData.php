@@ -1,7 +1,7 @@
 <?php
 require_once("db.php");
 
-$sql = "SELECT JobCode As Department, PunchID-EmployeeID As HoursWorked From punchdata WHERE PunchID < 30000";
+$sql = "SELECT Title As Department, SUM((TIME_TO_SEC(TIMEDIFF(TimeOut,TimeIn))/60/60)) As HoursWorked From punchdata LEFT JOIN department ON punchdata.JobCode = department.JobCode GROUP BY Title";
 
 
 $result = $mydb->query($sql);
