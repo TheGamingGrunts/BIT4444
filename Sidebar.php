@@ -68,7 +68,7 @@
         </a>
       </li>
       <li class='nav-item' data-toggle='tooltip' data-placement='right' title='Analytics'>
-        <a class='nav-link' href='".getLink("analytics")."'>
+        <a class='nav-link' href='".getLink("analytics/analytics.html")."'>
           <i class='fa fa-fw fa-bar-chart'></i>
           <span class='nav-link-text'>Analytics</span>
         </a>
