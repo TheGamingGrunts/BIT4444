@@ -21,6 +21,9 @@
         case 'schedule':
           $path = "../../manager/".$dir;
           break;
+        case 'analytics':
+          $path = "../../manager/".$dir;
+          break;
         default:
           $path = "../manager/".$dir;
           break;
@@ -37,6 +40,9 @@
           $path = "../manager/".$dir;
           break;
         case 'schedule':
+          $path = "../manager/".$dir;
+          break;
+        case 'analytics':
           $path = "../manager/".$dir;
           break;
         default:
@@ -68,7 +74,7 @@
         </a>
       </li>
       <li class='nav-item' data-toggle='tooltip' data-placement='right' title='Analytics'>
-        <a class='nav-link' href='".getLink("analytics/analytics.html")."'>
+        <a class='nav-link' href='".getLink("analytics")."'>
           <i class='fa fa-fw fa-bar-chart'></i>
           <span class='nav-link-text'>Analytics</span>
         </a>
