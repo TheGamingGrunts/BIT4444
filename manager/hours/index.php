@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>TimeClock | Settings</title>
+  <title>TimeClock | Edit Hours</title>
   <!-- Bootstrap core CSS-->
   <link href="../../css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -149,58 +149,56 @@
               </div>
             </form>
             <div class="card mb-3">
-            <div id="tablename" class="card-header"><i class="fa fa-table"></i></div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>PunchID</th>
-                      <th>Job Code</th>
-                      <th>Time In</th>
-                      <th>Time Out</th>
-                      <th>Rate</th>
-                      <th>Hours</th>
-                    </tr>
-                  </thead>
-                  <!--<tfoot>
-                    <tr>
-                      <th>Name</th>
-                      <th>Employee ID</th>
-                      <th>Date In</th>
-                      <th>Time In</th>
-                      <th>Department</th>
-                    </tr>
-                  </tfoot>-->
-                  <tbody>
+              <div id="tablename" class="card-header"><i class="fa fa-table"></i> Edit Hours</div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
+                        <th>PunchID</th>
+                        <th>Job Code</th>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                        <th>Rate</th>
+                        <th>Hours</th>
+                      </tr>
+                    </thead>
+                    <!--<tfoot>
+                      <tr>
+                        <th>Name</th>
+                        <th>Employee ID</th>
+                        <th>Date In</th>
+                        <th>Time In</th>
+                        <th>Department</th>
+                      </tr>
+                    </tfoot>-->
+                    <tbody>
                       <?php
+                        if (isset($_POST["go"])){
+                          require_once("../../login/db.php");
+                          $search = explode(" ", $_POST["search"]);
+                          $result = $mydb->query("SELECT ed.EmployeeID, ed.LastName, ed.FirstName FROM employeedata ed WHERE (ed.LastName LIKE '".$search[0]."' AND ed.FirstName LIKE '".$search[1].
+                            "') OR (ed.LastName LIKE '".$search[1]."' AND ed.FirstName LIKE '".$search[0]."')");
+                          $row1 = mysqli_fetch_array($result);
+                          echo "<script>document.getElementById('tablename').innerHTML=' ".$row1["FirstName"]."&#8217;s Hours';</script>";
+                          $result2 = $mydb->query("SELECT DISTINCT pd.PunchID, pd.DateIn, pd.TimeIn, pd.DateOut, pd.TimeOut, jt.JobTitle, d.Title as 'Dept', jt.JobSalary, TIMESTAMPDIFF(SECOND, CONCAT(pd.DateIn,' ', pd.TimeIn), CONCAT(pd.DateOut,' ', pd.TimeOut))/3600.0 AS 'Hours' FROM punchdata pd, login, employeedata ed, jobtype jt, department d WHERE pd.EmployeeID=".$row1["EmployeeID"]." AND pd.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode");
+                          $count = 0;
+                          while($row = mysqli_fetch_array($result2)){
+                            $count++;
+                            echo "<tr><td>".$row["PunchID"]."</td><td>".$row["Dept"]."</td><td>".$row["DateIn"]." ".$row["TimeIn"]."</td><td>".$row["DateOut"]." ".$row["TimeOut"]."</td><td>".$row["JobSalary"]."</td><td>".$row["Hours"]."</td><tr>"; 
+                          }
+
+                          if ($count == 0){
+                            echo "<tr><td class='text-danger'>No hours on record <i class='fa fa-frown-o' aria-hidden='true'></i></td></tr>";
+                          }
+
+                        }
                       ?>
-                    <?php
-                      if (isset($_POST["go"])){
-                        require_once("../../login/db.php");
-                        $search = explode(" ", $_POST["search"]);
-                        $result = $mydb->query("SELECT ed.EmployeeID, ed.LastName, ed.FirstName FROM employeedata ed WHERE (ed.LastName LIKE '".$search[0]."' AND ed.FirstName LIKE '".$search[1].
-                          "') OR (ed.LastName LIKE '".$search[1]."' AND ed.FirstName LIKE '".$search[0]."')");
-                        $row1 = mysqli_fetch_array($result);
-                        echo "<script>document.getElementById('tablename').innerHTML=' ".$row1["FirstName"]."&#8217;s Hours';</script>";
-                        $result2 = $mydb->query("SELECT DISTINCT pd.PunchID, pd.DateIn, pd.TimeIn, pd.DateOut, pd.TimeOut, jt.JobTitle, d.Title as 'Dept', jt.JobSalary, TIMESTAMPDIFF(SECOND, CONCAT(pd.DateIn,' ', pd.TimeIn), CONCAT(pd.DateOut,' ', pd.TimeOut))/3600.0 AS 'Hours' FROM punchdata pd, login, employeedata ed, jobtype jt, department d WHERE pd.EmployeeID=".$row1["EmployeeID"]." AND pd.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode");
-                        $count = 0;
-                        while($row = mysqli_fetch_array($result2)){
-                          $count++;
-                          echo "<tr><td>".$row["PunchID"]."</td><td>".$row["Dept"]."</td><td>".$row["DateIn"]." ".$row["TimeIn"]."</td><td>".$row["DateOut"]." ".$row["TimeOut"]."</td><td>".$row["JobSalary"]."</td><td>".$row["Hours"]."</td><tr>"; 
-                        }
-
-                        if ($count == 0){
-                          echo "<tr><td class='text-danger'>No hours on record <i class='fa fa-frown-o' aria-hidden='true'></i></td></tr>";
-                        }
-
-                      }
-                    ?>
-                  </tbody>
-                </table>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-          </div>
-          </div>
+            </div>
           </div>
         </div>
       </div>
@@ -240,6 +238,71 @@
         </div>
         </div>
       </div>
+      <div class="modal fade" id="edit">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Punch</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">Date In</label>
+                  <div class="col-10">
+                    <input class="form-control" type="date" value="2011-08-19" id="date-in">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">Time In</label>
+                  <div class="col-10">
+                    <input class="form-control" type="time" value="13:45:00" id="time-in">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">Date Out</label>
+                  <div class="col-10">
+                    <input class="form-control" type="date" value="2011-08-19" id="date-out">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">Time Out</label>
+                  <div class="col-10">
+                    <input class="form-control" type="time" value="13:45:00" id="time-out">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="example-text-input" class="col-2 col-form-label">Comment</label>
+                  <div class="col-10">
+                    <input class="form-control" type="text" value="" id="comment">
+                  </div>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="missedin" value="1"> Missed In
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="missedout" value="2"> Missed Out
+                  </label>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" name="update">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php 
+        if (isset($_POST["update"])){
+          
+        }
+      ?>
     </div>
   </div>
       <script src="../../js/bootstrap.bundle.min.js"></script>
@@ -257,6 +320,23 @@
     <script src="../../js/clock.js"></script>
       <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
     <script src="../../js/select2.min.js"></script>
+    <script>
+      $('#dataTable').find('tr').click( function(){
+        $('#edit').modal('show'); 
+        var c1 = $(this).find('td:nth-child(1)').text();
+        var c2 = $(this).find('td:nth-child(2)').text();
+        var c3 = $(this).find('td:nth-child(3)').text();
+        var c4 = $(this).find('td:nth-child(4)').text();
+        var c5 = $(this).find('td:nth-child(5)').text();
+        var c6 = $(this).find('td:nth-child(6)').text();
+        var dateinsplit = c3.split(" ");
+        var dateoutsplit = c4.split(" ");
+        $("#date-in").val(dateinsplit[0]);
+        $("#time-in").val(dateinsplit[1]);
+        $("#date-out").val(dateoutsplit[0]);
+        $("#time-out").val(dateoutsplit[1]);
+      });
+    </script>
   </div>
 </body>
 </html>
