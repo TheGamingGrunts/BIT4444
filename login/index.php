@@ -110,7 +110,7 @@
 									}
 								?>
 							</div>
-							<a href=""><small id="emailHelp" class="form-text text-muted">Forgot your password?</small></a>
+							<a href="../reset/"><small id="emailHelp" class="form-text text-muted">Forgot your password?</small></a>
 							<br>						
 							<table>
 								<tr>
