@@ -42,12 +42,6 @@
 					$row = mysqli_fetch_array($result);
 					$title = $row["JobTitle"];
 					$dept = $row["Title"];
-
-					$result = $mydb -> query("SELECT st.Name, s.LastDate, s.LastTime FROM login l, employeedata ed, status s, statustype st WHERE l.Username ='".$username."'AND l.EmployeeID = ed.EmployeeID AND ed.EmployeeID = s.EmployeeID AND s.StatusCode = st.StatusCode");
-					$row = mysqli_fetch_array($result);
-					$status_name = $row["Name"];
-					$status_date = $row["LastDate"];
-					$status_time = $row["LastTime"];
 				} else {
 					$loginOK = false;
 				}
@@ -61,9 +55,6 @@
 		        $_SESSION["title"] = $title;
 		        $_SESSION["dept"] = $dept;
 		        $_SESSION["login"] = true;
-		        $_SESSION["status_name"] = $status_name;
-		        $_SESSION["status_time"] = $status_time;
-		        $_SESSION["status_date"] = $status_date;
 		        Header("Location:..");
 		    }
 	    }
