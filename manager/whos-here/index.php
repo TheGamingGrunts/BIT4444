@@ -22,7 +22,6 @@
   <link rel="shortcut icon" type="image/x-icon" href="https://instructure-uploads.s3.amazonaws.com/account_45110000000000001/attachments/4984875/favicon.ico" />
   <!-- Custom styles for this template-->
   <link href="../../css/sb-admin.css" rel="stylesheet">
-  <link href="../../css/sb-admin.css" rel="stylesheet">
   <link rel="stylesheet" href="../../css/button.css">
   <script src="../../js/pace.js"></script>
   <link rel="stylesheet" type="text/css" href="../../css/pace.css">
@@ -176,7 +175,7 @@
                     }
 
                     if ($count == 0){
-                      echo "<tr><td class='text-danger'>No employees clocked in <i class='fa fa-frown-o' aria-hidden='true'></i></td></tr>";
+                      echo "<tr><td class='text-danger'>No employees clocked in <i class='fa fa-frown-o' aria-hidden='true'></i></td><td></td><td></td><td></td><td></td></tr>";
                     }
                   ?>
               </tbody>
