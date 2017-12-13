@@ -180,12 +180,23 @@
                           $result = $mydb->query("SELECT ed.EmployeeID, ed.LastName, ed.FirstName FROM employeedata ed WHERE (ed.LastName LIKE '".$search[0]."' AND ed.FirstName LIKE '".$search[1].
                             "') OR (ed.LastName LIKE '".$search[1]."' AND ed.FirstName LIKE '".$search[0]."')");
                           $row1 = mysqli_fetch_array($result);
+                          $_SESSION["searchEmpID"] = $row1["EmployeeID"];
                           echo "<script>document.getElementById('tablename').innerHTML=' ".$row1["FirstName"]."&#8217;s Hours';</script>";
-                          $result2 = $mydb->query("SELECT DISTINCT pd.PunchID, pd.DateIn, pd.TimeIn, pd.DateOut, pd.TimeOut, jt.JobTitle, d.Title as 'Dept', jt.JobSalary, TIMESTAMPDIFF(SECOND, CONCAT(pd.DateIn,' ', pd.TimeIn), CONCAT(pd.DateOut,' ', pd.TimeOut))/3600.0 AS 'Hours' FROM punchdata pd, login, employeedata ed, jobtype jt, department d WHERE pd.EmployeeID=".$row1["EmployeeID"]." AND pd.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode");
+                         
+                          $result2 = $mydb->query("SELECT DISTINCT pd.PunchID, pd.DateIn, pd.TimeIn, pd.DateOut, pd.TimeOut, pd.ModificationID, jt.JobTitle, d.Title as 'Dept', jt.JobSalary, TIMESTAMPDIFF(SECOND, CONCAT(pd.DateIn,' ', pd.TimeIn), CONCAT(pd.DateOut,' ', pd.TimeOut))/3600.0 AS 'Hours' FROM punchdata pd, login, employeedata ed, jobtype jt, department d WHERE pd.EmployeeID=".$row1["EmployeeID"]." AND pd.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode ORDER BY pd.DateIn DESC");
                           $count = 0;
                           while($row = mysqli_fetch_array($result2)){
                             $count++;
-                            echo "<tr><td>".$row["PunchID"]."</td><td>".$row["Dept"]."</td><td>".$row["DateIn"]." ".$row["TimeIn"]."</td><td>".$row["DateOut"]." ".$row["TimeOut"]."</td><td>".$row["JobSalary"]."</td><td>".$row["Hours"]."</td><tr>"; 
+
+                            $class = "";
+                            $title = "";
+                            if(!$row["ModificationID"] == ""){
+                              $class = "text-danger";
+                              $mod = $mydb->query("SELECT * FROM punchmodification pm WHERE pm.PunchID=".$row["PunchID"].";");
+                              $row2 = mysqli_fetch_array($mod);
+                              $title = "Record edited at ".$row2["EditTime"]." - ".$row2["Note"];
+                            }
+                            echo "<tr class='".$class."' data-toggle='tooltip' data-placement='top' title='".$title."'><td>".$row["PunchID"]."</td><td>".$row["Dept"]."</td><td>".$row["DateIn"]." ".$row["TimeIn"]."</td><td>".$row["DateOut"]." ".$row["TimeOut"]."</td><td>".$row["JobSalary"]."</td><td>".$row["Hours"]."</td><tr>"; 
                           }
 
                           if ($count == 0){
@@ -248,59 +259,109 @@
               </button>
             </div>
             <div class="modal-body">
-              <form>
+              <form name="update" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">PunchID</label>
+                  <div class="col-10">
+                    <input class="form-control" type="text" value="" name="punchid" id="punchid" readonly="readonly">
+                  </div>
+                </div>
                 <div class="form-group row">
                   <label class="col-2 col-form-label">Date In</label>
                   <div class="col-10">
-                    <input class="form-control" type="date" value="2011-08-19" id="date-in">
+                    <input class="form-control" type="date" value="" name="date-in" id="date-in">
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-2 col-form-label">Time In</label>
                   <div class="col-10">
-                    <input class="form-control" type="time" value="13:45:00" id="time-in">
+                    <input class="form-control" type="time" step="1" value="" name="time-in" id="time-in">
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-2 col-form-label">Date Out</label>
                   <div class="col-10">
-                    <input class="form-control" type="date" value="2011-08-19" id="date-out">
+                    <input class="form-control" type="date" value="" name="date-out" id="date-out">
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-2 col-form-label">Time Out</label>
                   <div class="col-10">
-                    <input class="form-control" type="time" value="13:45:00" id="time-out">
+                    <input class="form-control" type="time" step="1" value="" name="time-out" id="time-out">
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label for="example-text-input" class="col-2 col-form-label">Comment</label>
+                  <label class="col-2 col-form-label">Comment</label>
                   <div class="col-10">
-                    <input class="form-control" type="text" value="" id="comment">
+                    <input class="form-control" type="text" value="" name="comment" id="comment">
                   </div>
                 </div>
-                <div class="form-check form-check-inline">
+                <!--<div class="form-check form-check-inline">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" id="missedin" value="1"> Missed In
+                    <input class="form-check-input" type="checkbox" id="missedin" name="missedin" value="1"> Missed In
                   </label>
                 </div>
                 <div class="form-check form-check-inline">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" id="missedout" value="2"> Missed Out
+                    <input class="form-check-input" type="checkbox" id="missedout" name="missedout" value="2"> Missed Out
                   </label>
+                </div>-->
+                <br>
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">Missed</label>
+                  <div class="btn-group form-check-inline col-10" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                      <input type="radio" name="missed-in" id="missed-in" autocomplete="off"> Missed In
+                    </label>
+                    <label class="btn btn-primary">
+                      <input type="radio" name="missed-out" id="missed-out" autocomplete="off"> Missed Out
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">In/Out?</label>
+                  <div class="btn-group form-check-inline col-10" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                      <input type="radio" name="clocked-in" id="in" autocomplete="off"> Yes
+                    </label>
+                    <label class="btn btn-primary">
+                      <input type="radio" name="clocked-out" id="out" autocomplete="off"> No
+                    </label>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" name="update" id="update"  formmethod="post">Save changes</button>
                 </div>
               </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" name="update">Save changes</button>
             </div>
           </div>
         </div>
       </div>
       <?php 
         if (isset($_POST["update"])){
-          
+          require_once("../../login/db.php");
+          $punchmod = mt_rand(10000, 99999); //generate random punch mod id
+          $status = 0;
+          if(isset($_POST["clocked-in"])){
+            $status = 1;
+          }else{
+            $status = 3;
+          }
+          if (isset($_POST["missed-in"])){
+            $mydb->query("INSERT INTO `punchmodification`(`ModificationID`, `PunchID`, `EmployeeID`, `MissedIn`, `MissedOut`, `EditTime`, `Note`, `Approved`) VALUES (".$punchmod.", "
+              .$_POST["punchid"].", (SELECT ed.EmployeeID FROM employeedata ed, login l WHERE l.Username='".$_SESSION["username"]."' AND l.EmployeeID=ed.EmployeeID), 1, 0, NOW(), '".$_POST["comment"]."', 0);");
+            $mydb->query("UPDATE punchdata SET `DateIn`=DATE('".$_POST["date-in"]."'), `TimeIn`=TIME('".$_POST["time-in"]."'), `ModificationID`=".$punchmod." WHERE `PunchID`=".$_POST["punchid"].";");
+            $mydb->query("UPDATE status SET `StatusCode`= ".$status.", `LastDate`=(SELECT DateIn FROM punchdata pd WHERE pd.PunchID=".$_POST["punchid"]."), `LastTime`=(SELECT TimeIn FROM punchdata pd WHERE pd.PunchID=".$_POST["punchid"]
+                .") WHERE status.EmployeeID=".$_SESSION["searchEmpID"].";");
+          }elseif (isset($_POST["missed-out"])) {
+            $mydb->query("INSERT INTO `punchmodification`(`ModificationID`, `PunchID`, `EmployeeID`, `MissedIn`, `MissedOut`, `EditTime`, `Note`, `Approved`) VALUES (".$punchmod.", "
+              .$_POST["punchid"].", (SELECT ed.EmployeeID FROM employeedata ed, login l WHERE l.Username='".$_SESSION["username"]."' AND l.EmployeeID=ed.EmployeeID), 0, 1, NOW(), '".$_POST["comment"]."', 0);");
+            $mydb->query("UPDATE punchdata SET `DateOut`=DATE('".$_POST["date-out"]."'), `TimeOut`=TIME('".$_POST["time-out"]."'), `ModificationID`=".$punchmod." WHERE `PunchID`=".$_POST["punchid"].";");
+            $mydb->query("UPDATE status SET `StatusCode`= ".$status.", `LastDate`=(SELECT DateOut FROM punchdata pd WHERE pd.PunchID=".$_POST["punchid"]."), `LastTime`=(SELECT TimeOut FROM punchdata pd WHERE pd.PunchID=".$_POST["punchid"]
+                .") WHERE status.EmployeeID=".$_SESSION["searchEmpID"].";");
+          }
+          echo "<script>alert('Segment updated successfully');</script>";
         }
       ?>
     </div>
@@ -331,6 +392,7 @@
         var c6 = $(this).find('td:nth-child(6)').text();
         var dateinsplit = c3.split(" ");
         var dateoutsplit = c4.split(" ");
+        $("#punchid").val(c1);
         $("#date-in").val(dateinsplit[0]);
         $("#time-in").val(dateinsplit[1]);
         $("#date-out").val(dateoutsplit[0]);
