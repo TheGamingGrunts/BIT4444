@@ -30,7 +30,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>TimeClock | Analytics</title>
+  <title>TimeClock | Hours Breakdown</title>
   <!-- Bootstrap core CSS-->
   <link href="../../css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -148,7 +148,72 @@
         <li class="breadcrumb-item active">Analytics</li>
         <li id="clock" class="pull-right"></li>
       </ol>
-      <button class="btn btn-primary" type="button" id="viewhours">View Labor Hour Breakdown</button>
+      <div id="graph">
+        Hours Worked
+        <svg width="960" height="500"></svg>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script>
+
+          var svg = d3.select("svg"),
+              margin = {top: 20, right: 20, bottom: 30, left: 40},
+              width = +svg.attr("width") - margin.left - margin.right,
+              height = +svg.attr("height") - margin.top - margin.bottom;
+
+          var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+              y = d3.scaleLinear().rangeRound([height, 0]);
+
+          var g = svg.append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          // d3.tsv("data.tsv", function(d) {
+          //   d.frequency = +d.frequency;
+          //   return d;
+          // }, function(error, data) {
+
+          d3.json("getData.php", function(error, data){
+            if(error) throw error;
+            data.forEach(function(d){
+              d.letter = d.Department;
+              d.frequency = +d.HoursWorked;
+            })
+
+
+            if (error) throw error;
+
+            x.domain(data.map(function(d) { return d.letter; }));
+            y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+            g.append("g")
+                .attr("class", "axis axis--x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
+
+            g.append("g")
+                .attr("class", "axis axis--y")
+                .call(d3.axisLeft(y).ticks(24, "s"))
+              .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 12)
+                .attr("dy", "0.71em")
+                .attr("text-anchor", "end")
+                .text("Frequency");
+
+            g.selectAll(".bar")
+              .data(data)
+              .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { return x(d.letter); })
+                .attr("y", function(d) { return y(d.frequency); })
+                .attr("width", x.bandwidth())
+                .attr("height", function(d) { return height - y(d.frequency); });
+          });
+        </script>
+        </br>
+        <p>
+          Department
+        </p>
+      </div>
+
 <!-- Blank div to give the page height to preview the fixed vs. static navbar-->
 <div style="height: 100px;"></div>
 </div>
@@ -197,11 +262,6 @@
 <script src="../../js/clock.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
 <script src="../../js/select2.min.js"></script>
-<script>
-  $("#viewhours").click(function(){
-     window.location.href='hours.php';
-  })
-</script>
 </div>
 </body>
 </html>
