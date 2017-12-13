@@ -166,6 +166,8 @@
                  $_SESSION["status_name"] = "Clocked In"; //update session
                 }
               }elseif (isset($_POST["out"])) { //TODO
+                $result = $mydb->query("SELECT StatusCode FROM status, login, employeedata WHERE login.Username='".$_SESSION["username"]."' AND login.EmployeeID=employeedata.EmployeeID AND employeedata.EmployeeID=status.EmployeeID");
+                $row = mysqli_fetch_array($result);
                 if ($row["StatusCode"] == 3){
                   echo "<script>alert('You are already clocked out!');</script>";
                 }else{
