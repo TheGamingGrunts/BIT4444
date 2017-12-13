@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{REQUEST_URI} ^/404/$
+RewriteRule ^(.*)$ /404.php [L]
+

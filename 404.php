@@ -37,7 +37,7 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Home">
-          <a class="nav-link" href="">
+          <a class="nav-link" href="index.php">
             <i class="fa fa-fw fa-home"></i>
             <span class="nav-link-text">Home</span>
           </a>
