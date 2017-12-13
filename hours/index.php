@@ -144,7 +144,10 @@
               require("../Status.php");
 
               if (isset($_POST["in"])){
-                if ($_SESSION["status_name"] == "Clocked In"){
+                $result = $mydb->query("SELECT StatusCode FROM status, login, employeedata WHERE login.Username='".$_SESSION["username"]."' AND login.EmployeeID=employeedata.EmployeeID AND employeedata.EmployeeID=status.EmployeeID");
+                $row = mysqli_fetch_array($result);
+
+                if ($row["StatusCode"] == 1){
                   echo "<script>alert('You are already clocked in!');</script>";
                 }else{
                   $punchid = mt_rand(10000, 99999); //generate random punch ID
@@ -163,7 +166,7 @@
                  $_SESSION["status_name"] = "Clocked In"; //update session
                 }
               }elseif (isset($_POST["out"])) { //TODO
-                if ($_SESSION["status_name"] == "Clocked Out"){
+                if ($row["StatusCode"] == 3){
                   echo "<script>alert('You are already clocked out!');</script>";
                 }else{
                   $row = mysqli_fetch_array($mydb->query("SELECT s.PunchID FROM status s, login l, employeedata ed WHERE l.Username='".$_SESSION["username"]."' AND l.EmployeeID = ed.EmployeeID AND ed.EmployeeID = s.EmployeeID;"));
@@ -173,7 +176,7 @@
                   $_SESSION["status_name"] = "Clocked Out";
                 }
               }elseif (isset($_POST["break"])) { //TODO
-                if ($_SESSION["status_name"] == "On Break"){
+                if ($row["StatusCode"] == 2){
                   echo "<script>alert('You are currently on break!');</script>";
                 }else{
                   //break
@@ -213,10 +216,18 @@
                   <?php
 
                     require_once("../login/db.php");
-                    $result = $mydb->query("SELECT pd.DateIn, pd.TimeIn, pd.DateOut, pd.TimeOut, jt.JobTitle, d.Title as 'Dept', jt.JobSalary, TIMESTAMPDIFF(SECOND, CONCAT(pd.DateIn,' ', pd.TimeIn), CONCAT(pd.DateOut,' ', pd.TimeOut))/3600.0 AS 'Hours' FROM punchdata pd, login, employeedata ed, jobtype jt, department d WHERE login.Username ='".$_SESSION['username']."' AND login.EmployeeID = pd.EmployeeID AND pd.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode");
+                    $result = $mydb->query("SELECT pd.DateIn, pd.TimeIn, pd.DateOut, pd.TimeOut, pd.ModificationID, pd.PunchID, jt.JobTitle, d.Title as 'Dept', jt.JobSalary, TIMESTAMPDIFF(SECOND, CONCAT(pd.DateIn,' ', pd.TimeIn), CONCAT(pd.DateOut,' ', pd.TimeOut))/3600.0 AS 'Hours' FROM punchdata pd, login, employeedata ed, jobtype jt, department d WHERE login.Username ='".$_SESSION['username']."' AND login.EmployeeID = pd.EmployeeID AND pd.EmployeeID = ed.EmployeeID AND ed.JobType = jt.JobID AND ed.DeptCode = d.JobCode");
                     
                     while($row = mysqli_fetch_array($result)){
-                      echo "<tr><td>".$row["DateIn"]." ".$row["TimeIn"]."</td><td>".$row["DateOut"]." ".$row["TimeOut"]."</td><td>".$row["JobTitle"]."</td><td>".$row["Dept"]."</td><td>".$row["JobSalary"]."</td><td>".$row["Hours"]."</td></tr>";
+                      $class = "";
+                      $title = "";
+                      if(!$row["ModificationID"] == ""){
+                        $class = "text-danger";
+                        $mod = $mydb->query("SELECT * FROM punchmodification pm WHERE pm.PunchID=".$row["PunchID"].";");
+                        $row2 = mysqli_fetch_array($mod);
+                        $title = "Record edited at ".$row2["EditTime"]." - ".$row2["Note"];
+                      }
+                      echo "<tr class='".$class."' data-toggle='tooltip' data-placement='top' title='".$title."'><td>".$row["DateIn"]." ".$row["TimeIn"]."</td><td>".$row["DateOut"]." ".$row["TimeOut"]."</td><td>".$row["JobTitle"]."</td><td>".$row["Dept"]."</td><td>".$row["JobSalary"]."</td><td>".$row["Hours"]."</td></tr>";
                     }
                   ?>
               </tbody>
